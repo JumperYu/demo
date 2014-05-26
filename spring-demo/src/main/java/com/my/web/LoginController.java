@@ -19,7 +19,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,9 +48,28 @@ import com.my.util.Exceptions;
 @Controller
 public class LoginController {
 
+	private static transient final Logger log = LoggerFactory
+			.getLogger(LoginController.class);
+
 	// 寻址 **/login.jsp
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String login() {
+	public String login(@ModelAttribute LoginCommand command) {
+		
+		if(StringUtils.isEmpty(command.getUsername())){
+			return "login";
+		}
+		
+		Subject subject = SecurityUtils.getSubject();
+
+		UsernamePasswordToken token = new UsernamePasswordToken(
+				command.getUsername(), command.getPassword());
+
+		try {
+			subject.login(token);
+		} catch (AuthenticationException e) {
+			log.info("Error authenticating.", e);
+		}
+
 		return "login";
 	}
 
@@ -50,18 +77,20 @@ public class LoginController {
 	public String index() {
 		return "index";
 	}
-	
+
 	@RequestMapping(value = "{uri}")
 	public String getUrl(@PathVariable String uri) {
 		return uri;
 	}
-	
+
 	// 上传
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public String formUpload(@RequestParam("name")String name, @RequestParam("file")MultipartFile file) {
+	public String formUpload(@RequestParam("name") String name,
+			@RequestParam("file") MultipartFile file) {
 		try {
 			InputStream in = file.getInputStream();
-			FileOutputStream out = new FileOutputStream("d:/" + file.getOriginalFilename());
+			FileOutputStream out = new FileOutputStream("d:/"
+					+ file.getOriginalFilename());
 			IOUtils.copy(in, out);
 			IOUtils.closeQuietly(in);
 			IOUtils.closeQuietly(out);
@@ -70,8 +99,8 @@ public class LoginController {
 		}
 		return "redirect:index";
 	}
-	
-	// 最简单粗暴  但这种并不能改变content-type为application/json
+
+	// 最简单粗暴 但这种并不能改变content-type为application/json
 	@RequestMapping(value = "/name")
 	@ResponseBody
 	public String getBodyText(@PathVariable String name,
@@ -129,6 +158,5 @@ public class LoginController {
 		modelList.add(arrs);
 		return modelList;
 	}
-	
-	
+
 }

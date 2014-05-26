@@ -8,7 +8,6 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -16,8 +15,6 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
 import com.google.common.base.Objects;
-import com.my.entity.Role;
-import com.my.entity.User;
 
 public class ShiroDbRealm extends AuthorizingRealm {
 
@@ -29,13 +26,17 @@ public class ShiroDbRealm extends AuthorizingRealm {
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(
 			AuthenticationToken authcToken) throws AuthenticationException {
-		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
-		User user = accountService.findUserByLoginName(token.getUsername());
+		
+		return new SimpleAuthenticationInfo(authcToken.getPrincipal(), authcToken.getCredentials(), "");
+	/*	
+		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;	
+ 		User user = accountService.findUserByLoginName(token.getUsername());
 		if (user != null) {
 			return new SimpleAuthenticationInfo(user.getLoginName(), user.getPassword(), user.getName());
+			
 		} else {
 			return null;
-		}
+		}*/
 	}
 
 	/**
@@ -44,7 +45,7 @@ public class ShiroDbRealm extends AuthorizingRealm {
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(
 			PrincipalCollection principals) {
-		ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
+/*		ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
 		User user = accountService.findUserByLoginName(shiroUser.loginName);
 
 		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
@@ -53,7 +54,11 @@ public class ShiroDbRealm extends AuthorizingRealm {
 			info.addRole(role.getName());
 			// 基于Permission的权限信息
 			info.addStringPermissions(role.getPermissionList());
-		}
+		}*/
+		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+		info.addRole("role1");
+		info.addRole("role2");
+		info.addStringPermission("update");
 		return info;
 	}
 

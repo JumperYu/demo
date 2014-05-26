@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ include file="/WEB-INF/include/include.jsp"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
 <html lang="en">
 <head>
@@ -36,23 +36,36 @@
 </head>
 
 <body>
-	<form class="form-signin" action="https://localhost/spring-demo/login">
+	
+	 <h2>You have successfully logged in as <shiro:principal/>.</h2>
+
+	<p style="font-weight: bold;">
+		<shiro:hasRole name="role1">You have role 1.<br />
+		</shiro:hasRole>
+		<shiro:lacksRole name="role1">You do not have role 1.<br />
+		</shiro:lacksRole>
+		<shiro:hasRole name="role2">You have role 2.<br />
+		</shiro:hasRole>
+		<shiro:lacksRole name="role2">You do not have role 2.<br />
+		</shiro:lacksRole>
+	</p>
+	<form class="form-signin" action="http://localhost/spring-demo/login">
 		<h2 class="form-signin-heading">请登陆</h2>
 		<div class="controls">
-			<input type="email" class="form-control input-medium required" placeholder="输入邮箱"
-			required autofocus >
+			<input type="text" name="username"
+				class="form-control input-medium required" placeholder="输入账号"
+				required autofocus>
 		</div>
-		<input type="password" class="form-control"
-			placeholder="密码" required>
-		<label class="checkbox">
-			<input type="checkbox" value="remember-me"> 记住我
+		<input type="password" name="password" class="form-control"
+			placeholder="密码" required> <label class="checkbox"> <input
+			type="checkbox" value="remember-me"> 记住我
 		</label>
 		<button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
 	</form>
 	<script>
- 		$(function() {
+		$(function() {
 			$(".form-signin").validate();
-		}); 
+		});
 	</script>
 </body>
 </html>

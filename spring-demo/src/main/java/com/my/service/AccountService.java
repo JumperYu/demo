@@ -3,13 +3,13 @@ package com.my.service;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
+import javax.annotation.Resource;
+
 import org.apache.shiro.SecurityUtils;
 import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Maps;
 import com.my.entity.Role;
@@ -25,14 +25,16 @@ import com.my.service.ShiroDbRealm.ShiroUser;
  * @param
  */
 // Spring Service Bean的标识.
-@Component
-@Transactional
+@Service
+//@Transactional
 public class AccountService {
+	
 	public static final String HASH_ALGORITHM = "SHA-1";
 	public static final int HASH_INTERATIONS = 1024;
 	//private static final int SALT_SIZE = 8;
 
 	private static Logger logger = LoggerFactory.getLogger(AccountService.class);
+	
 	private UserDao userDao;
 
 	private RoleDao roleDao;
@@ -53,9 +55,9 @@ public class AccountService {
 		}
 
 		// 设定安全的密码，生成随机的salt并经过1024次 sha-1 hash
-		if (StringUtils.isNotBlank(user.getPlainPassword())) {
+/*		if (StringUtils.isNotBlank(user.getPlainPassword())) {
 			entryptPassword(user);
-		}
+		}*/
 
 		userDao.save(user);
 		
@@ -154,6 +156,7 @@ public class AccountService {
 	// Setter methods //
 	// -----------------//
 
+	@Resource
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
 	}

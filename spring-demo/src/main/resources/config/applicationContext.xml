@@ -38,16 +38,16 @@
 			</props>
 		</property>
 	</bean>
+
 	<bean id="persistenceProvider" class="org.hibernate.jpa.HibernatePersistenceProvider" />
 
 	<bean id="jpaVendorAdapter"
 		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-		<property name="generateDdl" value="false" />
-		<property name="database" value="HSQL" />
 	</bean>
+
 	<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
 
-	<jpa:repositories base-package="org.springside.examples.showcase"
+	<jpa:repositories base-package="com.my.repository.jpa"
 		transaction-manager-ref="transactionManager"
 		entity-manager-factory-ref="entityManagerFactory" />
 
@@ -58,6 +58,7 @@
 		<tx:method name="someOtherBusinessMethod" propagation="REQUIRES_NEW" /> <tx:method 
 		name="*" propagation="SUPPORTS" read-only="true" /> </tx:attributes> </tx:advice> -->
 
+	<!-- bean below allows multipart upload -->
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<!-- one of the properties available; the maximum file size in bytes -->

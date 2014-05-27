@@ -2,6 +2,7 @@ package com.my.test.jpa;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.metamodel.EntityType;
@@ -14,6 +15,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.my.repository.jpa.UserDao;
+import com.my.service.AccountService;
+
 @RunWith(SpringJUnit4ClassRunner.class) 
 @ContextConfiguration("/config/applicationContext**.xml") 
 public class JpaTest {
@@ -23,7 +27,13 @@ public class JpaTest {
 
 	@PersistenceContext
 	private EntityManager em;
-
+	
+	@Resource
+	private UserDao userDao;
+	
+	@Resource
+	private AccountService accountService;
+	
 	@Test
 	public void allClassMapping() throws Exception {
 		Metamodel model = em.getEntityManagerFactory().getMetamodel();
@@ -36,6 +46,16 @@ public class JpaTest {
 			em.createQuery("select o from " + entityName + " o").getResultList();
 			logger.info("ok: " + entityName);
 		}
+	}
+	
+	@Test
+	public void testDaoFindByLoginName(){
+		logger.info(userDao.findByLoginName("admin").toString());
+	}
+	
+	@Test
+	public void testAccountService(){
+		logger.info("" + accountService.findUserByLoginName("admin"));
 	}
 
 }

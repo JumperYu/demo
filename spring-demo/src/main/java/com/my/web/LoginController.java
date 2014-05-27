@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.my.entity.User;
 import com.my.util.Exceptions;
 
 /**
@@ -52,25 +53,25 @@ public class LoginController {
 			.getLogger(LoginController.class);
 
 	// 寻址 **/login.jsp
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String login(@ModelAttribute LoginCommand command) {
-		
-		if(StringUtils.isEmpty(command.getUsername())){
-			return "login";
-		}
-		
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	public String login(@ModelAttribute User user) {
+
 		Subject subject = SecurityUtils.getSubject();
 
-		UsernamePasswordToken token = new UsernamePasswordToken(
-				command.getUsername(), command.getPassword());
-
-		try {
+		if (user != null && StringUtils.isNotBlank(user.getUsername())) {
+			UsernamePasswordToken token = new UsernamePasswordToken(
+					user.getUsername(), user.getPassword());
 			subject.login(token);
-		} catch (AuthenticationException e) {
-			log.info("Error authenticating.", e);
 		}
 
-		return "login";
+		/*
+		 * try { } catch (AuthenticationException e) {
+		 * log.info("Error authenticating.", e); }
+		 */
+		if (subject.isAuthenticated())
+			return "redirect:index";
+		else
+			return "login";
 	}
 
 	@RequestMapping(value = "/index", method = RequestMethod.GET)

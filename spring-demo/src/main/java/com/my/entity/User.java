@@ -5,27 +5,12 @@
  *******************************************************************************/
 package com.my.entity;
 
-import java.util.List;
-
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.Lists;
 
 /**
  * 用户.
@@ -33,39 +18,27 @@ import com.google.common.collect.Lists;
  * @author zxm
  */
 @Entity
-@Table(name = "ss_user")
+@Table(name = "users")
 // 默认的缓存策略.
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User extends IdEntity {
 	
-	private String loginName;
-	private String plainPassword;
+	private String username;
 	private String password;
 	private String salt;
 	private String name;
 	private String email;
 	private String status;
 
-	private Team team;
+	//private Team team;
 
-	private List<Role> roleList = Lists.newArrayList(); // 有序的关联对象集合
+	 //private List<Role> roleList = Lists.newArrayList(); 有序的关联对象集合
+	public String getUsername() {
+		return username;
+	}
 	
-	@NotBlank
-	public String getLoginName() {
-		return loginName;
-	}
-
-	public void setLoginName(String loginName) {
-		this.loginName = loginName;
-	}
-
-	@Transient
-	public String getPlainPassword() {
-		return plainPassword;
-	}
-
-	public void setPlainPassword(String plainPassword) {
-		this.plainPassword = plainPassword;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getPassword() {
@@ -84,7 +57,6 @@ public class User extends IdEntity {
 		this.salt = salt;
 	}
 
-	@NotBlank
 	public String getName() {
 		return name;
 	}
@@ -93,7 +65,6 @@ public class User extends IdEntity {
 		this.name = name;
 	}
 
-	@Email
 	public String getEmail() {
 		return email;
 	}
@@ -109,8 +80,13 @@ public class User extends IdEntity {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
+	}
 
-	// 多对多定义
+/*	// 多对多定义
 	@ManyToMany
 	@JoinTable(name = "ss_user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "role_id") })
 	// Fecth策略定义
@@ -125,8 +101,9 @@ public class User extends IdEntity {
 
 	public void setRoleList(List<Role> roleList) {
 		this.roleList = roleList;
-	}
-
+	}*/
+	
+	/*
 	@ManyToOne
 	@JoinColumn(name = "team_id")
 	public Team getTeam() {
@@ -142,9 +119,5 @@ public class User extends IdEntity {
 	public String getRoleNames() {
 		return "";
 	}
-
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
-	}
+*/
 }

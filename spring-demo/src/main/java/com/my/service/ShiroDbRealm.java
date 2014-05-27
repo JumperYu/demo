@@ -2,19 +2,20 @@ package com.my.service;
 
 import java.io.Serializable;
 
-import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
 import com.google.common.base.Objects;
+import com.my.entity.User;
 
 public class ShiroDbRealm extends AuthorizingRealm {
 
@@ -26,17 +27,14 @@ public class ShiroDbRealm extends AuthorizingRealm {
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(
 			AuthenticationToken authcToken) throws AuthenticationException {
-		
-		return new SimpleAuthenticationInfo(authcToken.getPrincipal(), authcToken.getCredentials(), "");
-	/*	
-		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;	
- 		User user = accountService.findUserByLoginName(token.getUsername());
+		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
+		User user = accountService.findUserByLoginName(token.getUsername());
 		if (user != null) {
-			return new SimpleAuthenticationInfo(user.getLoginName(), user.getPassword(), user.getName());
-			
+			return new SimpleAuthenticationInfo(user.getUsername(),
+					user.getPassword(), user.getName());
 		} else {
 			return null;
-		}*/
+		}
 	}
 
 	/**
@@ -45,39 +43,40 @@ public class ShiroDbRealm extends AuthorizingRealm {
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(
 			PrincipalCollection principals) {
-/*		ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
-		User user = accountService.findUserByLoginName(shiroUser.loginName);
-
-		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-		for (Role role : user.getRoleList()) {
-			// 基于Role的权限信息
-			info.addRole(role.getName());
-			// 基于Permission的权限信息
-			info.addStringPermissions(role.getPermissionList());
-		}*/
+		/*
+		 * ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
+		 * User user = accountService.findUserByLoginName(shiroUser.loginName);
+		 * 
+		 * SimpleAuthorizationInfo info = new SimpleAuthorizationInfo(); for
+		 * (Role role : user.getRoleList()) { // 基于Role的权限信息
+		 * info.addRole(role.getName()); // 基于Permission的权限信息
+		 * info.addStringPermissions(role.getPermissionList()); }
+		 */
 		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 		info.addRole("role1");
 		info.addRole("role2");
 		info.addStringPermission("update");
 		return info;
 	}
-
-	/**
-	 * 设定Password校验的Hash算法与迭代次数.
-	 */
-	@PostConstruct
-	public void initCredentialsMatcher() {
-		HashedCredentialsMatcher matcher = new HashedCredentialsMatcher(
-				AccountService.HASH_ALGORITHM);
-		matcher.setHashIterations(AccountService.HASH_INTERATIONS);
-
-		setCredentialsMatcher(matcher);
-	}
-
+	
+	@Resource
 	public void setAccountService(AccountService accountService) {
 		this.accountService = accountService;
 	}
 
+	/**
+	 * 设定Password校验的Hash算法与迭代次数.
+	 * 
+	 * @PostConstruct public void initCredentialsMatcher() {
+	 *                HashedCredentialsMatcher matcher = new
+	 *                HashedCredentialsMatcher( AccountService.HASH_ALGORITHM);
+	 *                matcher
+	 *                .setHashIterations(AccountService.HASH_INTERATIONS);
+	 * 
+	 *                setCredentialsMatcher(matcher); }
+	 * 
+	 * 
+	 */
 	/**
 	 * 自定义Authentication对象，使得Subject除了携带用户的登录名外还可以携带更多信息.
 	 */

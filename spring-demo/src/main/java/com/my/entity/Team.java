@@ -46,7 +46,7 @@ public class Team extends IdEntity {
 	public void setMaster(User master) {
 		this.master = master;
 	}
-
+/*
 	@OneToMany(mappedBy = "team")
 	public List<User> getUserList() {
 		return userList;
@@ -54,5 +54,5 @@ public class Team extends IdEntity {
 
 	public void setUserList(List<User> userList) {
 		this.userList = userList;
-	}
+	}*/
 }

@@ -49,7 +49,7 @@
 		<shiro:lacksRole name="role2">You do not have role 2.<br />
 		</shiro:lacksRole>
 	</p>
-	<form class="form-signin" action="http://localhost/spring-demo/login">
+	<form class="form-signin" action="http://localhost/spring-demo/login" method="post">
 		<h2 class="form-signin-heading">请登陆</h2>
 		<div class="controls">
 			<input type="text" name="username"
